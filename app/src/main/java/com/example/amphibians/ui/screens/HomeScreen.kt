@@ -1,15 +1,19 @@
 package com.example.amphibians.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,15 +35,55 @@ import com.example.amphibians.model.Amphibian
 import com.example.amphibians.ui.theme.AmphibiansTheme
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    amphibiansUiState: AmphibiansUiState,
+    retryAction: () -> Unit,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp)
+) {
+    when (amphibiansUiState) {
+        is AmphibiansUiState.Loading -> LoadingScreen(modifier = modifier)
+        is AmphibiansUiState.Success -> ListAmphibians(
+            amphibian = amphibiansUiState.amphibians,
+            modifier = modifier.padding(
+                start = dimensionResource(R.dimen.padding_medium),
+                end = dimensionResource(R.dimen.padding_medium),
+                top = dimensionResource(R.dimen.padding_medium)
+            ),
+            contentPadding = contentPadding
+        )
+        else -> ErrorScreen(retryAction = retryAction, modifier = modifier)
+    }
+}
 
+@Composable
+fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(stringResource(R.string.loading_failed))
+        Button(onClick = retryAction) {
+            Text(stringResource(R.string.retry))
+        }
+    }
+}
+
+@Composable
+fun LoadingScreen(modifier: Modifier) {
+    Image (
+        modifier = modifier.size(200.dp),
+        painter = painterResource(R.drawable.ic_loading),
+        contentDescription = stringResource(R.string.loading)
+    )
 }
 
 @Composable
 fun AmphibianCard(amphibian: Amphibian, modifier: Modifier = Modifier) {
     Card(
         modifier = Modifier,
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(

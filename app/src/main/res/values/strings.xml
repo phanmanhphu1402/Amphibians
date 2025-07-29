@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Amphibians</string>
     <string name="amphibian_title">%s (%s)</string>
+    <string name="amphibian_description">%s</string>
+    <string name="loading">loading</string>
+    <string name="loading_failed">fail</string>
+    <string name="retry">retry\n</string>
 </resources>
